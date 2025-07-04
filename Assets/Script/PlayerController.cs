@@ -19,8 +19,14 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         playerRigidbody = GetComponent<Rigidbody2D>();
+        if (playerRigidbody == null)
+            Debug.LogError($"PlayerController: Rigidbody2D가 할당되지 않았습니다. (오브젝트명: {gameObject.name})");
         animator = GetComponent<Animator>();
+        if (animator == null)
+            Debug.LogError($"PlayerController: Animator가 할당되지 않았습니다. (오브젝트명: {gameObject.name})");
         playerAudio = GetComponent<AudioSource>();
+        if (playerAudio == null)
+            Debug.LogError($"PlayerController: AudioSource가 할당되지 않았습니다. (오브젝트명: {gameObject.name})");
     }
 
     // Update is called once per frame
@@ -46,10 +52,21 @@ public class PlayerController : MonoBehaviour
 
     private void Die()
     {
-        animator.SetTrigger("Die");
-        playerAudio.clip = deathClip;
-        playerAudio.Play();
+        if (animator != null)
+            animator.SetTrigger("Die");
+        if (playerAudio != null)
+        {
+            playerAudio.clip = deathClip;
+            playerAudio.Play();
+        }
+        if (playerRigidbody != null)
+            playerRigidbody.linearVelocity = Vector2.zero; // Reset velocity to prevent further movement
         isDead = true;
+        // 게임 매니저에 플레이어 사망 알림
+        if (GameManager.instance != null)
+            GameManager.instance.OnPlayerDead();
+        else
+            Debug.LogWarning("PlayerController: GameManager.instance가 null입니다. OnPlayerDead()를 호출할 수 없습니다.");
     }
 
     private void OnTriggerEnter2D(Collider2D other)
