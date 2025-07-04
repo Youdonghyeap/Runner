@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlatformSpawner : MonoBehaviour
 {
     public GameObject platformPrefab; // Prefab for the platform to spawn
-    public int count = 3;
+    public int count = 4;
 
     public float timeBetSpawnMin = 1.25f;
     public float timeBetSpawnMax = 2.25f;
